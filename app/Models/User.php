@@ -18,8 +18,10 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'name',
         'email',
         'password',
+        'email_verified'
     ];
 
     /**
@@ -31,4 +33,14 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    public function setPasswordAttribute($password)
+    {
+        $this->attributes['password'] = bcrypt($password);
+    }
+
+    public function userEmailVerify()
+    {
+        return $this->hasOne(VerifyUserEmail::class);
+    }
 }
