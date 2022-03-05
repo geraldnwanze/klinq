@@ -47,7 +47,7 @@ class AuthFormRequest extends FormRequest
     {
         return [
             'name' => 'required|max:40',
-            'email' => 'required|email|unique:users,email|max:20',
+            'email' => 'required|email|unique:users,email|max:20|email:dns',
             'password' => ['required', 'max:20', $this->passwordRules()]
         ];
     }

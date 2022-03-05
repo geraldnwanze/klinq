@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\VerifyUserEmail;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
@@ -17,7 +18,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = '/home';
+    public const HOME = '/';
 
     /**
      * Define your route model bindings, pattern filters, etc.
@@ -36,6 +37,8 @@ class RouteServiceProvider extends ServiceProvider
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
         });
+
+        $this->bindTokenForEmailVerification();
     }
 
     /**
@@ -47,6 +50,13 @@ class RouteServiceProvider extends ServiceProvider
     {
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+        });
+    }
+
+    protected function bindTokenForEmailVerification()
+    {
+        Route::bind('token', function ($token) {
+                return VerifyUserEmail::where('token', $token)->first();
         });
     }
 }

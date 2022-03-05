@@ -21,5 +21,7 @@ Route::get('/', function () {
 # Auth Routes
 Route::view('register', 'auth.register')->name('register-page');
 Route::post('register', [AuthController::class, 'register'])->name('register');
+Route::get('verify-email/{token}', [AuthController::class, 'verifyEmail'])->name('verify-email')->middleware('verify-email');
 
-Route::view('login', 'auth.login')->name('login');
+Route::view('login', 'auth.login')->name('login-page');
+Route::post('login', [AuthController::class, 'login'])->name('login');

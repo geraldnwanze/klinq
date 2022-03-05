@@ -39,7 +39,8 @@ class EmailVerificationJob implements ShouldQueue
     public function handle()
     {    
         match($this->route){
-            'register' => $this->jobForRegister()
+            'register' => $this->jobForRegister(),
+            'login' => $this->jobForLogin()
         };
     }
 
@@ -50,9 +51,24 @@ class EmailVerificationJob implements ShouldQueue
        }
     }
 
+    public function jobForLogin()
+    {
+        if ($this->updateEmailVerificationToken()) {
+            $this->sendEmailVerificationMail();
+        }
+    }
+
     public function createEmailVerificationToken()
     {
         if (VerifyUserEmail::create(['user_id' => $this->user->id, 'token' => Str::random(64), 'expire_at' => now()])) {
+            return true;
+        }
+        return false;
+    }
+
+    public function updateEmailVerificationToken()
+    {
+        if (VerifyUserEmail::where('user_id', $this->user->id)->first()->update(['token' => Str::random(64), 'expire_at' => now()])) {
             return true;
         }
         return false;
