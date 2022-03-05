@@ -1,3 +1,5 @@
+<x-alert />
+
 <form action="{{ route('register') }}" method="post">
     @csrf
     <input type="text" name="name" id="">
