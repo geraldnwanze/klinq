@@ -77,7 +77,7 @@ class AuthJob implements ShouldQueue
         $name = User::where('email', $this->user['email'])->first()->name;
         $password_reset = DB::table('password_resets')->where('email', $this->user['email'])->first();
         if ($password_reset === null) {
-            DB::table('password_resets')->insert(['email' => $this->user['email'], 'token' => $token, 'created_at' => now()]);
+            DB::table('password_resets')->insert(['email' => $this->user['email'], 'token' => $token, 'expire_at' => config('auth.token_expiry')]);
         } else {
             DB::table('password_resets')->where('email', $this->user['email'])->update(['token' => $token]);
         }
@@ -93,7 +93,7 @@ class AuthJob implements ShouldQueue
 
     public function createEmailVerificationToken()
     {
-        if (VerifyUserEmail::create(['user_id' => $this->user->id, 'token' => Str::random(64), 'expire_at' => now()])) {
+        if (VerifyUserEmail::create(['user_id' => $this->user->id, 'token' => Str::random(64), 'expire_at' => config('auth.token_expiry')])) {
             return true;
         }
         return false;
@@ -101,7 +101,7 @@ class AuthJob implements ShouldQueue
 
     public function updateEmailVerificationToken()
     {
-        if (VerifyUserEmail::where('user_id', $this->user->id)->first()->update(['token' => Str::random(64), 'expire_at' => now()])) {
+        if (VerifyUserEmail::where('user_id', $this->user->id)->first()->update(['token' => Str::random(64), 'expire_at' => config('auth.token_expiry')])) {
             return true;
         }
         return false;

@@ -108,4 +108,6 @@ return [
 
     'password_timeout' => 10800,
 
+    'token_expiry' => time() + (60 * 2)
+
 ];

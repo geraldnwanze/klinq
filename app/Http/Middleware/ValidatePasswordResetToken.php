@@ -19,7 +19,10 @@ class ValidatePasswordResetToken
     {
         if ($request->token) {
             if (DB::table('password_resets')->where('token', $request->token)->exists()) {
-                return $next($request);
+                if (DB::table('password_resets')->where('token', $request->token)->first()->expire_at > time()) {
+                    return $next($request);
+                }
+                return redirect(route('auth.login-page'))->withErrors(['error' => 'Token has expired']);
             }
             return redirect(route('auth.login-page'))->withErrors(['error' => 'Token is Invalid']);
         }
