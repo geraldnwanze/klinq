@@ -19,10 +19,13 @@ class ValidateEmailVerificationToken
     {
         if ($request->token) {
             if (VerifyUserEmail::where('token', $request->token)->exists()) {
-                return $next($request);
+                if (VerifyUserEmail::where('token', $request->token)->first()->expire_at > time()) {
+                    return $next($request);
+                }
+                return redirect(route('auth.login-page'))->withErrors(['error' => 'Token has expired, login to resend link']);
             }
-            return redirect(route('login'))->withErrors(['error' => 'Token is Invalid']);
+            return redirect(route('auth.login-page'))->withErrors(['error' => 'Token is Invalid']);
         }
-        return redirect(route('login'))->withErrors(['error' => 'Token is Invalid']);
+        return redirect(route('auth.login-page'))->withErrors(['error' => 'Token is Invalid']);
     }
 }
