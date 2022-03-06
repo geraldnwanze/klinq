@@ -24,9 +24,11 @@ class AuthFormRequest extends FormRequest
      */
     public function rules()
     {
-        return match($this->path()){
-            'login' => $this->login(),
-            'register' => $this->register()
+        return match($this->route()->getName()){
+            'auth.login' => $this->login(),
+            'auth.register' => $this->register(),
+            'auth.forgot-password' => $this->forgotPassword(),
+            'auth.reset-password' => $this->resetPassword()
         };
     }
 
@@ -49,6 +51,21 @@ class AuthFormRequest extends FormRequest
             'name' => 'required|max:40',
             'email' => 'required|email|unique:users,email|max:20|email:dns',
             'password' => ['required', 'max:20', $this->passwordRules()]
+        ];
+    }
+
+    public function forgotPassword()
+    {
+        return [
+            'email' => 'required|max:20|email:dns'
+        ];
+    }
+
+    public function resetPassword()
+    {
+        return [
+            'password' => ['required', 'same:confirm_password', $this->passwordRules()],
+            'confirm_password' => ['required', 'same:password', $this->passwordRules()]
         ];
     }
 }
