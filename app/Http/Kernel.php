@@ -3,6 +3,8 @@
 namespace App\Http;
 
 use App\Http\Middleware\EmailVerificationMiddleware;
+use App\Http\Middleware\ValidateEmailVerificationToken;
+use App\Http\Middleware\ValidatePasswordResetToken;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -64,6 +66,7 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-        'verify-email' => EmailVerificationMiddleware::class
+        'validate-email-verification-token' => ValidateEmailVerificationToken::class,
+        'validate-password-reset-token' => ValidatePasswordResetToken::class
     ];
 }

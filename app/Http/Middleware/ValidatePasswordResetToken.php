@@ -2,11 +2,11 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\VerifyUserEmail;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
-class EmailVerificationMiddleware
+class ValidatePasswordResetToken
 {
     /**
      * Handle an incoming request.
@@ -18,11 +18,11 @@ class EmailVerificationMiddleware
     public function handle(Request $request, Closure $next)
     {
         if ($request->token) {
-            if (VerifyUserEmail::where('token', $request->token->token)->exists()) {
+            if (DB::table('password_resets')->where('token', $request->token)->exists()) {
                 return $next($request);
             }
-            return redirect(route('login'))->withErrors(['error' => 'Token is Invalid']);
+            return redirect(route('auth.login-page'))->withErrors(['error' => 'Token is Invalid']);
         }
-        return redirect(route('login'))->withErrors(['error' => 'Token is Invalid']);
+        return redirect(route('auth.login-page'))->withErrors(['error' => 'Token not provided']);
     }
 }

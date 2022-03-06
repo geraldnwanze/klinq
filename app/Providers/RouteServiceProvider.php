@@ -38,7 +38,7 @@ class RouteServiceProvider extends ServiceProvider
                 ->group(base_path('routes/web.php'));
         });
 
-        $this->bindTokenForEmailVerification();
+        // $this->bindTokenForEmailVerification();
     }
 
     /**
